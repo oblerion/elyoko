@@ -14,7 +14,7 @@ uniform vec4 colDiffuse;
 
 // NOTE: Add here your custom variables
 
-#define     MAX_LIGHTS              4
+#define     MAX_LIGHTS              5
 #define     LIGHT_DIRECTIONAL       0
 #define     LIGHT_POINT             1
 
