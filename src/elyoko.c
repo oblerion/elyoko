@@ -162,7 +162,10 @@ void LYO_ClearTextures()
         }
     }
 }
-void LYO_Init()
+#include "elyoko_runner.h"
+#include "elyoko_editor.h"
+
+void LYO_Init(int narg,char** sarg)
 {
     LM_Init();
     // LM_AddDirectionalLight((Vector3){0,1300,0},(Vector3){0,0,0},WHITE);
@@ -170,18 +173,62 @@ void LYO_Init()
     LM_AddPointLight((Vector3){1300,1300,0},(Vector3){0,0,0},LIGHTGRAY);
     LM_AddPointLight((Vector3){0,1300,1300},(Vector3){0,0,0},DARKGRAY);
     LM_AddPointLight((Vector3){0,1300,-1300},(Vector3){0,0,0},DARKGRAY);
+
+    int ientry = Runner_Init(narg,sarg);
+    if(ientry)
+    {
+        _elyoko.iseditor=0;
+        Editor_Init(narg,sarg);
+    }
+    else if(!Editor_Init(narg,sarg))
+    {
+        _elyoko.iseditor = 0;
+    }
+    else
+    {
+        _elyoko.iseditor=1;
+    }
 }
-void LYO_Free()
+void LYO_Draw()
+{
+    if(!_elyoko.iseditor)
+    {
+        Runner_Draw3d();
+        Runner_Draw2d();
+        if(IsKeyPressed(KEY_SPACE))
+        {
+            _elyoko.iseditor=1;
+            LYO_Reset();
+            Editor_Init(1,NULL);
+        }
+    }
+    else
+    {
+        _elyoko.iseditor = Editor_Draw();
+    }
+}
+void LYO_Reset()
 {
     for(int i=0;i<LYO_MAX_MODEL;i++)
     {
         if(_elyoko.lmodel_isload[i])
-        UnloadModel(_elyoko.lmodel[i]);
+        {
+            _elyoko.lmodel_isload[i]=0;
+            UnloadModel(_elyoko.lmodel[i]);
+        }
     }
     for(int i=0;i<LYO_MAX_TEXTURE;i++)
     {
         if(_elyoko.ltexture_isload[i])
-        UnloadTexture(_elyoko.ltexture[i]);
+        {
+            _elyoko.ltexture_isload[i]=0;
+            UnloadTexture(_elyoko.ltexture[i]);
+        }
     }
+}
+void LYO_Free()
+{
+    LYO_Reset();
     LM_Unload();
+    Runner_Free();
 }

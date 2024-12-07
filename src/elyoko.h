@@ -7,7 +7,7 @@
 #include "raymath.h"
 #include "lightmanager.h"
 
-#define LYO_VERSION "a0.2"
+#define LYO_VERSION "a0.3"
 #define LYO_MAX_MODEL 100
 #define LYO_MAX_TEXTURE 100
 
@@ -19,6 +19,7 @@ struct selyoko
     char ltexture_isload[LYO_MAX_TEXTURE];
     char ltexture_name[LYO_MAX_TEXTURE][30];
     Texture ltexture[LYO_MAX_TEXTURE];
+    char iseditor;
 };
 
 void LYO_LoadMesh(const char* path);
@@ -31,5 +32,7 @@ Texture* LYO_GetTexture(const char* name);
 void LYO_DelTexture(const char* name);
 void LYO_DrawTexture(const char* name,float x,float y);
 void LYO_ClearTextures();
-void LYO_Init();
+void LYO_Init(int narg,char** sarg);
+void LYO_Draw();
+void LYO_Reset();
 void LYO_Free();
