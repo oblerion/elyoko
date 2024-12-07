@@ -1,0 +1,12 @@
+_main.entry
+elyoko
+elyoko.exe
+elyoko.kdev4
+asset/7130-snwspeeder.dae
+asset/mcube.glb
+build/linux64
+build/win86
+asset/7130-snwspeeder_opti.glb
+src/.runner.c.swp
+src/gui/rguilayout
+elyoko_a0.1/asset/mcube.glb
