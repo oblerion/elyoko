@@ -108,16 +108,16 @@ GuiUIBrowserState InitGuiUIBrowser(void)
     state.ButtonNewPressed = false;
     state.ButtonOpenDirPressed = false;
 
-    state.layoutRecs[0] = (Rectangle){ 0, 0, 960, 720 };
-    state.layoutRecs[1] = (Rectangle){ 8, 48, 944, 664 };
-    state.layoutRecs[2] = (Rectangle){ 40, 104, 712, 576 };
+    state.layoutRecs[0] = (Rectangle){ 0, 0, 1000, 720 };
+    state.layoutRecs[1] = (Rectangle){ 8, 48, 984, 664 };
+    state.layoutRecs[2] = (Rectangle){ 32, 88, 728, 568 };
     state.layoutRecs[3] = (Rectangle){ 704, 16, 80, 24 };
     state.layoutRecs[4] = (Rectangle){ 808, 16, 72, 24 };
-    state.layoutRecs[5] = (Rectangle){ 792, 168, 128, 40 };
-    state.layoutRecs[6] = (Rectangle){ 40, 80, 712, 24 };
-    state.layoutRecs[7] = (Rectangle){ 792, 104, 128, 40 };
-    state.layoutRecs[8] = (Rectangle){ 376, 80, 120, 24 };
-    state.layoutRecs[9] = (Rectangle){ 792, 232, 128, 40 };
+    state.layoutRecs[5] = (Rectangle){ 784, 152, 168, 40 };
+    state.layoutRecs[6] = (Rectangle){ 32, 64, 728, 24 };
+    state.layoutRecs[7] = (Rectangle){ 784, 88, 168, 40 };
+    state.layoutRecs[8] = (Rectangle){ 360, 64, 120, 24 };
+    state.layoutRecs[9] = (Rectangle){ 784, 216, 168, 40 };
     state.layoutRecs[10] = (Rectangle){ 600, 16, 80, 24 };
 
     // Custom variables initialization
@@ -131,7 +131,7 @@ void GuiUIBrowser(GuiUIBrowserState *state,const char* cstrn)
     GuiGroupBox(state->layoutRecs[1], "UI Browser");
     GuiListView(state->layoutRecs[2], cstrn, &state->ListViewNameScrollIndex, &state->ListViewNameActive);
    	state->ButtonConfigPressed = GuiButton(state->layoutRecs[3], "#142#"); 
-    state->ButtonDocPressed = GuiButton(state->layoutRecs[4], "doc"); 
+    state->ButtonDocPressed = GuiButton(state->layoutRecs[4], "#193#"); 
     state->ButtonDeletePressed = GuiButton(state->layoutRecs[5], "#009#"); 
     GuiPanel(state->layoutRecs[6], NULL);
     state->ButtonLoadPressed = GuiButton(state->layoutRecs[7], "#013#"); 

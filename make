@@ -14,7 +14,7 @@ CC=gcc
 if [ -f "src/main.cpp" ];then
 	CC=g++
 fi
-CFLAGS="-g -Wall -L${RAYLIBLIN}/lib -L${LUALINUX}/lib -llua -lraylib -lGL -lm -lpthread -ldl -lrt -lX11"
+CFLAGS="-g -Wall -L${RAYLIBLIN}/lib -L${LUALINUX}/lib -llua -lraylib -lGL -lm -lz -lpthread -ldl -lrt -lX11"
 INC="-I../${RAYLIBLIN}/include -I../${LUALINUX}/include -Isrc"
 EXEC="elyoko"
 DOBJ="build/linux64/"

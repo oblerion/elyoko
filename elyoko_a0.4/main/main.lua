@@ -3,9 +3,8 @@ loadplanetexture("title_elyoko.png") -- use loaded texture for create plane text
 require("lib.towers")
 require("lib.math")
 
---towers_add(10,0,0)
---towers_add(40,0,0)
-loadmodel("asset/huki.glb")
+towers_add(10,0,0)
+towers_add(40,0,0)
 
 camerasetpos(0,2,-10)
 
@@ -23,5 +22,4 @@ end
 function ELYOKO3D()
   towers_draw()
   drawmodel("title_elyoko.png",0,6,10,torad(90),0,torad(180),0.25)
-  drawmodel("huki.glb",0,0,0,0,0,0,15)
 end

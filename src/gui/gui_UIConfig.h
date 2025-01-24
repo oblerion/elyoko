@@ -95,8 +95,8 @@ GuiUIConfigState InitGuiUIConfig(void)
     state.WindowBox000Active = true;
     state.ComboBox001Active = 0;
 
-    state.layoutRecs[0] = (Rectangle){ 0, 0, 960, 720 };
-    state.layoutRecs[1] = (Rectangle){ 72, 56, 848, 24 };
+    state.layoutRecs[0] = (Rectangle){ 0, 0, 1000, 720 };
+    state.layoutRecs[1] = (Rectangle){ 72, 56, 888, 24 };
     state.layoutRecs[2] = (Rectangle){ 16, 56, 48, 24 };
 
     // Custom variables initialization

@@ -1,3 +1,18 @@
+# a0.4
+- GUI create project (folder)
+- CLI create project (folder)
+
+- GUI delete project (folder)
+- CLI delete project (folder)
+
+- GUI load project (folder)
+- CLI load project (folder)
+
+- [x] browser open doc
+- [x] browser open dir
+- [ ] browser config
+
+
 # a0.3
 - [x] uibrowser -> scan project
 

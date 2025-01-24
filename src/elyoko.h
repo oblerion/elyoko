@@ -7,7 +7,7 @@
 #include "raymath.h"
 #include "lightmanager.h"
 
-#define LYO_VERSION "a0.3"
+#define LYO_VERSION "a0.4"
 #define LYO_MAX_MODEL 100
 #define LYO_MAX_TEXTURE 100
 

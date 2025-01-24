@@ -465,7 +465,15 @@ char Runner_Init(int narg,char** sarg)
     if(narg==2)
     {
         _Runner_Init();
-        Runner_DoFile(sarg[1]);
+        const char* script = TextFormat("%s/main.lua",sarg[1]);
+        if(FileExists(script))
+        {
+            Runner_DoFile(script);
+        }
+        else if(FileExists(sarg[1]))
+        {
+            Runner_DoFile(sarg[1]);
+        }
     }
     else
     {
@@ -476,7 +484,7 @@ char Runner_Init(int narg,char** sarg)
             {
                 char flua[50];
                 strcpy(flua,GetFileNameWithoutExt(files.paths[i]));
-                strcat(flua,".lua");
+                strcat(flua,"/main.lua");
                 _Runner_Init();
                 if(FileExists(flua))
                 {
