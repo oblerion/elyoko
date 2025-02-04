@@ -3,6 +3,12 @@
 help to create lyoko world
 [elyoko](https://oblerion.itch.io/elyoko)
 
+## Build (window or linux)
+go in elyoko dir and :
+```sh
+make
+```
+
 ## Run engine
 - win :
 ```sh
