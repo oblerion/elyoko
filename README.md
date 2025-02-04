@@ -4,7 +4,7 @@ help to create lyoko world
 [elyoko](https://oblerion.itch.io/elyoko)
 
 ## Build (window or linux)
-need : gcc toolchain and makefile <br>
+need : gcc toolchain and make <br>
 go in elyoko dir and :
 ```sh
 make
