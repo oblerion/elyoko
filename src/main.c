@@ -4,7 +4,6 @@
 //#include "libzip.h"
 
 
-
 int main(int narg,char** sarg)
 {
     const char* title = TextFormat("Elyoko ver %s by magnus oblerion",LYO_VERSION);

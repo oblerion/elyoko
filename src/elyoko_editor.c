@@ -41,6 +41,7 @@ void StyleLoader(int pid)
 
 struct sproject
 {
+    char name[50];
     char path[100];
 };
 
@@ -75,9 +76,9 @@ struct seditor
 void Config_Load(struct sconfig* sconf)
 {
     const char* cfg_file = ".elyoko.conf";
-    if(FileExists(cfg_file))
+    FILE* fic = fopen(cfg_file,"rb");
+    if(fic != NULL)
     {
-        FILE* fic = fopen(cfg_file,"rb");
         fread(&sconf->data_config,sizeof(struct sdata_config),1,fic);
         fclose(fic);
         StyleLoader(sconf->data_config.id_theme);
@@ -89,13 +90,9 @@ void Config_Save(struct sconfig* sconf)
 {
     const char* cfg_file = ".elyoko.conf";
     sconf->data_config.id_theme = sconf->tmp_theme;
-    // if(FileExists(cfg_file))
-    // {
-        FILE* fic = fopen(cfg_file,"wb");
-        fwrite(&sconf->data_config,sizeof(struct sdata_config),1,fic);
-        fclose(fic);
-    // }
-
+    FILE* fic = fopen(cfg_file,"wb");
+    fwrite(&sconf->data_config,sizeof(struct sdata_config),1,fic);
+    fclose(fic);
 }
 
 struct sconfig Config_Init()
@@ -147,9 +144,7 @@ void Browser_Scan(struct sbrowser* _Browser)
         )
         {
             struct sproject lpjt = {{0}};
-            strcpy(lpjt.path,files.paths[i]);
-            strcat(lpjt.path,"/main.lua");
-            printf("\n|%s|\n",lpjt.path);
+            strcpy(lpjt.name,files.paths[i]);
 
             if(_Browser->project_nb==0)
             {
@@ -166,34 +161,6 @@ void Browser_Scan(struct sbrowser* _Browser)
                 //strcpy(_BROWSER.listpath[i],sfile);
             }
         }
-		// if(!DirectoryExists(files.paths[i]))
-		// {
-		// 	const char* file_noext = GetFileName(files.paths[i]);
-		// 	// if(!BROWSER_IfProjectLoaded(file_noext))
-		// 	// 	BROWSER_LoadProject(file_noext);
-  //           const char* sext = GetFileExtension(files.paths[i]);
-  //           const char* sfile = GetFileName(files.paths[i]);
-  //           if(TextIsEqual(sext,".lua") && !TextIsEqual(files.paths[i],"."))
-  //           {
-  //               printf("\n|%s|\n",sfile);
-  //               struct sproject lpjt = {{0}};
-  //               strcpy(lpjt.path,sfile);
-  //               if(_Browser->project_nb==0)
-  //               {
-  //                   strcat(_Browser->listname_draw,file_noext);
-  //                   //strcpy(_BROWSER.listpath[i],sfile);
-  //                   _Browser->listproject[_Browser->project_nb] = lpjt;
-  //                   _Browser->project_nb++;
-  //               }
-  //               else
-  //               {
-  //                   strcat(_Browser->listname_draw,TextFormat(";%s",file_noext));
-  //                   _Browser->listproject[_Browser->project_nb] = lpjt;
-  //                   _Browser->project_nb++;
-  //                   //strcpy(_BROWSER.listpath[i],sfile);
-  //               }
-  //           }
-  //       }
 	}
 	UnloadDirectoryFiles(files);
 }
@@ -234,18 +201,16 @@ void Browser_DelProject(struct sbrowser* sbrowser)
     }
 }
 
-#if defined(__linux)
-#define _ifbinexist(name) (TextFormat("command -v %s && %s . && echo use %s",name,name,name))
-#endif
+#define _launchbin(path) if(FileExists(path)) system(TextFormat("%s .",GetFileName(path)))
 
 void Browser_OpenDir(struct sbrowser sbrowser)//GuiUIBrowserState state_uibrowser)
 {
     if(sbrowser.state_uibrowser.ButtonOpenDirPressed)
     {
 #if defined(__linux)
-        system(_ifbinexist("nautilus"));
-        system(_ifbinexist("nemo"));
-        system(_ifbinexist("gnome-open"));
+        _launchbin("/usr/bin/nautilus");
+        _launchbin("/usr/bin/nemo");
+        _launchbin("/usr/bin/gnome-open");
 #elif defined(_WIN32)
         system(TextFormat("start %windir%\\%s %c.%c",
                           "explorer.exe",'"','"'));
@@ -253,7 +218,7 @@ void Browser_OpenDir(struct sbrowser sbrowser)//GuiUIBrowserState state_uibrowse
     }
 }
 
-void Browser_Doc(struct sbrowser sbrowser)//GuiUIBrowserState state_uibrowser)
+void Browser_Doc(struct sbrowser sbrowser)
 {
     if(sbrowser.state_uibrowser.ButtonDocPressed)
     {
@@ -268,13 +233,13 @@ void Browser_Doc(struct sbrowser sbrowser)//GuiUIBrowserState state_uibrowser)
     }
 }
 
-char Browser_LoadProject(struct sbrowser sbrowser)//GuiUIBrowserState state_uibrowser)
+char Browser_LoadProject(struct sbrowser sbrowser)
 {
     char rc = 1;
     if(sbrowser.state_uibrowser.ButtonLoadPressed)
     {
         int id = (sbrowser.state_uibrowser.ListViewNameScrollIndex*19)+sbrowser.state_uibrowser.ListViewNameActive;
-        Runner_DoFile(sbrowser.listproject[id].path);
+        Runner_DoFolder(sbrowser.listproject[id].name);
         rc= 0;
     }
     return rc;
@@ -288,7 +253,7 @@ void Browser_Config(struct sbrowser sbrowser)
     }
 }
 
-char Editor_Init(int narg,char** sarg)
+char Editor_Init(int narg)
 {
     char rc = 0;
     if(narg==1)

@@ -24,6 +24,22 @@ bool _IsRotateUp()
 
 struct srunner _runner={0};
 
+const char* _getpath(const char* path)// get project path
+{
+    if( FileExists(path))
+        return TextFormat("%s",path);
+    else
+        return TextFormat("%s/%s",_runner.project,path);
+
+    return "";
+}
+//get project name
+int rlua_getProjectName(clua_state* L)
+{
+    lua_pushstring(L,_runner.project);
+    return 1;
+}
+
 //time
 int rlua_deltatime(clua_state* L)
 {
@@ -225,6 +241,8 @@ int rlua_cameraLock(clua_state* L)
     _runner.iscameralock = state;
     return 0;
 }
+
+
 //3d
 int rlua_drawcube(clua_state* L)
 {
@@ -253,9 +271,12 @@ int rlua_drawsphere(clua_state* L)
 }
 int rlua_loadmodel(clua_state* L)
 {
-    LYO_LoadMesh(lua_tostring(L,1));
+    const char* path = //_GetProjectPath(
+        lua_tostring(L,1);//);
+    LYO_LoadMesh(_getpath(path));
     return 0;
 }
+
 int rlua_delmodel(clua_state* L)
 {
     LYO_DelMesh(lua_tostring(L,1));
@@ -274,11 +295,7 @@ int rlua_drawmodel(clua_state* L)
     LYO_DrawMesh(name,x,y,z,rx,ry,rz,scale);
     return 0;
 }
-int rlua_clearmodels(clua_state* L)
-{
-    LYO_ClearMeshes();
-    return 0;
-}
+
 int rlua_loadplanetexture(clua_state* L)
 {
     const char* name = lua_tostring(L,1);
@@ -371,8 +388,9 @@ int rlua_drawcircleb(clua_state* L)
 }
 int rlua_loadtexture(clua_state* L)
 {
-    const char* sfile = lua_tostring(L,1);
-    LYO_LoadTexture(sfile);
+    const char* path = lua_tostring(L,1);
+    //const char* sfile = lua_tostring(L,1);
+    LYO_LoadTexture(_getpath(path));
     return 0;
 }
 int rlua_deltexture(clua_state* L)
@@ -389,11 +407,101 @@ int rlua_drawtexture(clua_state* L)
     LYO_DrawTexture(name,x,y);
     return 0;
 }
-int rlua_cleartextures(clua_state* L)
+
+// sound / music
+
+int rlua_loadsound(clua_state* L)
 {
-    LYO_ClearTextures();
+    const char* path = lua_tostring(L,1);
+    LYO_LoadSound(_getpath(path));
     return 0;
 }
+int rlua_delsound(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    LYO_DelSound(name);
+    return 0;
+}
+int rlua_playsound(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    LYO_PlaySound(name);
+    return 0;
+}
+int rlua_setsoundvolume(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    float vol = lua_tonumber(L,2);
+    LYO_SetSoundVolume(name,vol);
+    return 0;
+}
+int rlua_setsoundpan(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    float pan = lua_tonumber(L,2);
+    LYO_SetSoundPan(name,pan);
+    return 0;
+}
+int rlua_setsoundpitch(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    float pitch = lua_tonumber(L,2);
+    LYO_SetSoundPitch(name,pitch);
+    return 0;
+}
+
+int rlua_loadmusic(clua_state* L)
+{
+    const char* path = lua_tostring(L,1);
+    LYO_LoadMusic(_getpath(path));
+    return 0;
+}
+int rlua_delmusic(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    LYO_DelMusic(name);
+    return 0;
+}
+int rlua_playmusic(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    LYO_PlayMusic(name);
+    return 0;
+}
+int rlua_pausemusic(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    LYO_PauseMusic(name);
+    return 0;
+}
+int rlua_stopmusic(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    LYO_StopMusic(name);
+    return 0;
+}
+int rlua_setmusicvolume(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    float vol = lua_tonumber(L,2);
+    LYO_SetMusicVolume(name,vol);
+    return 0;
+}
+int rlua_setmusicpan(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    float pan = lua_tonumber(L,2);
+    LYO_SetMusicPan(name,pan);
+    return 0;
+}
+int rlua_setmusicpitch(clua_state* L)
+{
+    const char* name = lua_tostring(L,1);
+    float pitch = lua_tonumber(L,2);
+    LYO_SetMusicPitch(name,pitch);
+    return 0;
+}
+
 void _Runner_Init()
 {
     _runner.cam3d = (Camera){
@@ -414,6 +522,8 @@ void _Runner_Init()
 
 
     // CLUA_setnumber(&_runner.clua,"BLACK",ColorToInt(BLACK));
+    //project name
+    CLUA_setfunction(&_runner.clua,rlua_getProjectName,"projectname");
     //time
     CLUA_setfunction(&_runner.clua,rlua_deltatime,"deltatime");
     // 3d
@@ -423,7 +533,7 @@ void _Runner_Init()
     CLUA_setfunction(&_runner.clua,rlua_drawcube,"cube");
     CLUA_setfunction(&_runner.clua,rlua_drawsphere,"sphere");
     CLUA_setfunction(&_runner.clua,rlua_loadplanetexture,"loadplanetexture");
-    CLUA_setfunction(&_runner.clua,rlua_clearmodels,"clearmodels");
+    //CLUA_setfunction(&_runner.clua,rlua_clearmodels,"clearmodels");
 
     //CLUA_setfunction(&_runner.clua,rlua_drawplanetexture,"drawplanetexture");
 
@@ -438,8 +548,6 @@ void _Runner_Init()
     CLUA_setfunction(&_runner.clua,rlua_loadtexture,"loadtexture");
     CLUA_setfunction(&_runner.clua,rlua_deltexture,"deltexture");
     CLUA_setfunction(&_runner.clua,rlua_drawtexture,"drawtexture");
-    CLUA_setfunction(&_runner.clua,rlua_cleartextures,"cleartextures");
-
 
     //input
     CLUA_setfunction(&_runner.clua,rlua_key,"key");
@@ -458,21 +566,40 @@ void _Runner_Init()
     CLUA_setfunction(&_runner.clua,rlua_cameraLock,"cameralock");
     CLUA_setfunction(&_runner.clua,rlua_cameraMoveTarget,"cameramovetarget");
     CLUA_setfunction(&_runner.clua,rlua_cameraSetTarget,"camerasettarget");
+
+    //sound
+    CLUA_setfunction(&_runner.clua,rlua_loadsound,"loadsound");
+    CLUA_setfunction(&_runner.clua,rlua_delsound,"delsound");
+    CLUA_setfunction(&_runner.clua,rlua_playsound,"playsound");
+    CLUA_setfunction(&_runner.clua,rlua_setsoundvolume,"setsoundvolume");
+    CLUA_setfunction(&_runner.clua,rlua_setsoundpan,"setsoundpan");
+    CLUA_setfunction(&_runner.clua,rlua_setsoundpitch,"setsoundpitch");
+
+    //music
+    CLUA_setfunction(&_runner.clua,rlua_loadmusic,"loadmusic");
+    CLUA_setfunction(&_runner.clua,rlua_delmusic,"delmusic");
+    CLUA_setfunction(&_runner.clua,rlua_playmusic,"playmusic");
+    CLUA_setfunction(&_runner.clua,rlua_pausemusic,"pausemusic");
+    CLUA_setfunction(&_runner.clua,rlua_stopmusic,"stopmusic");
+    CLUA_setfunction(&_runner.clua,rlua_setmusicvolume,"setmusicvolume");
+    CLUA_setfunction(&_runner.clua,rlua_setmusicpan,"setmusicpan");
+    CLUA_setfunction(&_runner.clua,rlua_setmusicpitch,"setmusicpitch");
 }
 char Runner_Init(int narg,char** sarg)
 {
     char rc = 0;
+    _Runner_Init();
     if(narg==2)
     {
-        _Runner_Init();
-        const char* script = TextFormat("%s/main.lua",sarg[1]);
-        if(FileExists(script))
+        // if(FileExists(sarg[1]))
+        // {
+        //     Runner_DoFile(sarg[1]);
+        // }
+        //else
+        if(DirectoryExists(sarg[1]))
         {
-            Runner_DoFile(script);
-        }
-        else if(FileExists(sarg[1]))
-        {
-            Runner_DoFile(sarg[1]);
+            Runner_DoFolder(sarg[1]);
+            strcpy(_runner.project,sarg[1]);
         }
     }
     else
@@ -482,13 +609,18 @@ char Runner_Init(int narg,char** sarg)
         {
             if(TextIsEqual(GetFileExtension(files.paths[i]),".entry"))
             {
-                char flua[50];
-                strcpy(flua,GetFileNameWithoutExt(files.paths[i]));
-                strcat(flua,"/main.lua");
-                _Runner_Init();
-                if(FileExists(flua))
+                //const char* script = TextFormat("%s.lua",GetFileNameWithoutExt( files.paths[i]));
+                const char* sfolder = GetFileNameWithoutExt(files.paths[i]);
+                // if(FileExists(script))
+                // {
+                //     Runner_DoFile(script);
+                //     rc=1;
+                // }
+                // else
+                if(DirectoryExists(sfolder))
                 {
-                    Runner_DoFile(flua);
+                    Runner_DoFolder(sfolder);
+                    strcpy(_runner.project,sfolder);
                     rc=1;
                 }
                 break;
@@ -500,7 +632,19 @@ char Runner_Init(int narg,char** sarg)
 }
 void Runner_DoFile(const char* slua)
 {
-    CLUA_dofile(&_runner.clua,slua);
+    if(FileExists(slua) && TextIsEqual(GetFileExtension(slua),".lua"))
+        CLUA_dofile(&_runner.clua,slua);
+}
+void Runner_DoFolder(const char* sdir)
+{
+            printf("\nload dir |%s|\n",sdir);
+    if(DirectoryExists(sdir))
+    {
+
+        strncpy(_runner.project,sdir,100);
+        const char* sscript =  TextFormat("%s/main.lua",sdir);
+        Runner_DoFile(sscript);
+    }
 }
 void Runner_Draw2d()
 {
@@ -572,10 +716,10 @@ void Runner_Draw3d()
         if(!CLUA_iferror(&_runner.clua))
         {
              BeginMode3D(_runner.cam3d);
-             if(_runner.iscameralock==0)
-             {
-                ControlCamera(&_runner.cam3d,CAMERA_FIRST_PERSON);
-             }
+                if(_runner.iscameralock==0)
+                {
+                    ControlCamera(&_runner.cam3d,CAMERA_FIRST_PERSON);
+                }
                 DrawGrid(100,0.5f);
                 CLUA_callfunction(&_runner.clua,"ELYOKO3D");
             EndMode3D();

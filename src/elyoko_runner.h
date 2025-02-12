@@ -13,10 +13,12 @@ struct srunner
     struct CLUA clua;
     char isload;
     char iscameralock;
+    char project[100];// project folder name
 };
 
 char Runner_Init(int narg,char** sarg);
 void Runner_DoFile(const char*);
+void Runner_DoFolder(const char*);
 void Runner_Draw2d();
 void Runner_Draw3d();
 void Runner_Free();
